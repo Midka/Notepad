@@ -1,24 +1,18 @@
 package lv.ctco.notepad;
 
+import static lv.ctco.notepad.Main.askString;
+import static lv.ctco.notepad.Main.validatePhone;
+
 /**
  * Created by m.troushnikova on 11/16/2018.
  */
-public class Person {
-    private static int counter = 0;
-    private int id;
+public class Person extends Record {
     private String name;
     private String surname;
     private String email;
     private String phone;
+    private String gender;
 
-    public Person() {
-        counter++;
-        id = counter;
-    }
-
-    public int getId() {
-        return id;
-    }
 
     public String getName() {
         return name;
@@ -52,14 +46,39 @@ public class Person {
         this.email = email;
     }
 
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
     @Override
     public String toString() {
         return "Person{" +
-                "id=" + id +
+                " id='" + getId() + '\'' +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
+                ", gender='" + gender + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean contains(String str) {
+        return name.toLowerCase().contains(str)
+                || surname.toLowerCase().contains(str)
+                || phone.toLowerCase().contains(str)
+                || email.toLowerCase().contains(str);
+    }
+
+    @Override
+    public void askData() {
+        setName(askString("Enter person's name:"));
+        setSurname(askString("Enter person's surname:"));
+        setPhone(validatePhone());
+        setEmail(askString("Enter person's e-mail:"));
     }
 }

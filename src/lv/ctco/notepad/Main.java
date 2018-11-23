@@ -1,11 +1,10 @@
 package lv.ctco.notepad;
 
-import java.io.File;
 import java.util.*;
 
 public class Main {
     private static Scanner scanner = new Scanner(System.in);
-    private static List<Person> records = new ArrayList<>();
+    private static List<Record> records = new ArrayList<>();
    // private static final File RESULTS_FILE = new File("persons.txt");
 
     public static void main(String[] args) {
@@ -16,19 +15,32 @@ public class Main {
             System.out.println("Please, enter command:");
             String cmd = scanner.next();
             switch (cmd) {
-                case "c":
-                    createPerson();
+                case "cn":
+                case "createnote":
+                    createRecord(new StickyNote());
+                    break;
+                case "cp":
+                case "createperson":
+                    createRecord(new Person());
                     break;
                 case "h":
+                case "help":
                     showHelp();
                     break;
                 case "l":
+                case "list":
                     showList();
                     break;
+                case "s":
+                case "search":
+                    searchRecord();
+                    break;
                 case "d":
+                case "delete":
                     deleteRecord();
                     break;
                 case "e":
+                case "exit":
                     System.out.println("Auf viedersehen");
                     return;
                 default:
@@ -36,30 +48,36 @@ public class Main {
             }
         }
     }
+
+    private static void searchRecord() {
+        String ss = askString("Enter search string:");
+        records.stream()
+                .filter(r -> r.contains(ss))
+                .forEach(System.out::println);
+    }
+
+    private static void createRecord(Record record) {
+        record.askData();
+        records.add(record);
+        System.out.println(record);
+    }
+
     private static void showList() {
-        records.forEach(r -> System.out.println(r));
+        records.forEach(System.out::println);
     }
 
     private static void showHelp() {
         System.out.println("List of available commands:");
-        System.out.println("create: adds person to ");
-        System.out.println("list: shows list of persons");
-        System.out.println("delete: delete person with given id");
-        System.out.println("help: shows current help ");
+        System.out.println("\t create: adds person to ");
+        System.out.println("\t list: shows list of persons");
+        System.out.println("\t search: searches for different fignja");
+        System.out.println("\t delete: delete person with given id");
+        System.out.println("\t help: shows current help ");
 
     }
-    private static void createPerson() {
-        Person person = new Person();
 
-        person.setName(askString("Enter person's name:"));
-        person.setSurname(askString("Enter person's surname:"));
-        person.setPhone(validatePhone());
-        person.setEmail(askString("Enter person's e-mail:"));
 
-        records.add(person);
-    }
-
-    private static String askString(String msg) {
+    static String askString(String msg) {
         String returnedString;
         while (true) {
             System.out.println(msg);
@@ -94,9 +112,9 @@ public class Main {
     private static void deleteRecord() {
         System.out.println("Enter ID of record You would like to delete");
         int enteredID = getEnteredNumber();
-        Person personTodelete = null;
+        Record personTodelete = null;
 
-        for(Person person : records){
+        for(Record person : records){
             if (person.getId() == enteredID) {
                 personTodelete = person;
             }
@@ -108,6 +126,10 @@ public class Main {
 
     private static int getEnteredNumber() {
         while(true) {
+            if (records.size() == 0) {
+                System.out.println("You have an empty list nothing to delete");
+                return 0;
+            }
             try {
                 int enteredNumber = scanner.nextInt();
 
@@ -124,7 +146,7 @@ public class Main {
 
     }
 
-    private static String validatePhone() {
+     static String validatePhone() {
         String phoneNumber = askString("Enter person's phone:");
         while(phoneNumber.length() <5) {
             System.out.println("Phone number is too short, enter at least 5 symbols");
