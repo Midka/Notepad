@@ -1,8 +1,17 @@
 package lv.ctco.notepad;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+import static java.time.format.DateTimeFormatter.ofPattern;
+
 public class Main {
+    private static final String DATE_PATTERN = "dd-MM-uuuu";
+    private static final String TIME_PATTERN = "HH:mm";
+    static final DateTimeFormatter DATE_FORMATTER = ofPattern(DATE_PATTERN);
+    static final DateTimeFormatter TIME_FORMATTER = ofPattern(TIME_PATTERN);
     private static Scanner scanner = new Scanner(System.in);
     private static List<Record> records = new ArrayList<>();
    // private static final File RESULTS_FILE = new File("persons.txt");
@@ -22,6 +31,14 @@ public class Main {
                 case "cp":
                 case "createperson":
                     createRecord(new Person());
+                    break;
+                case "cr":
+                case "createreminder":
+                    createRecord(new Reminder());
+                    break;
+                case "ca":
+                case "createalarm":
+                    createRecord(new Alarm());
                     break;
                 case "h":
                 case "help":
@@ -59,7 +76,7 @@ public class Main {
     private static void createRecord(Record record) {
         record.askData();
         records.add(record);
-        System.out.println(record);
+//        System.out.println(record);
     }
 
     private static void showList() {
@@ -94,6 +111,16 @@ public class Main {
         }
 
         return returnedString;
+    }
+
+    static LocalDate askDate(String msg){
+        String strDate = askString(msg);
+        return LocalDate.parse(strDate, DATE_FORMATTER);
+    }
+
+    static LocalTime askTime(String msg) {
+        String strTime = askString(msg);
+        return LocalTime.parse(strTime, TIME_FORMATTER);
     }
 
     private static List<String> getValuesList(String returnedString) {

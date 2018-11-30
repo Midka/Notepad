@@ -1,13 +1,11 @@
 package lv.ctco.notepad;
 
-/**
- * Created by m.troushnikova on 11/23/2018.
- */
+
 public abstract class Record {
     private static
     int counter = 0;
     private int id;
-    public Record() {
+    Record() {
         counter++;
         id = counter;
     }
@@ -16,7 +14,7 @@ public abstract class Record {
 
     public abstract void askData();
 
-    public int getId() {
+    int getId() {
         return id;
     }
 }
