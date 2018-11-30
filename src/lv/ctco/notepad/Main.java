@@ -1,8 +1,10 @@
 package lv.ctco.notepad;
 
+import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 
 import static java.time.format.DateTimeFormatter.ofPattern;
@@ -114,13 +116,31 @@ public class Main {
     }
 
     static LocalDate askDate(String msg){
-        String strDate = askString(msg);
-        return LocalDate.parse(strDate, DATE_FORMATTER);
+        LocalDate localDate;
+        while (true) {
+            try {
+                String strDate = askString(msg);
+                localDate = LocalDate.parse(strDate, DATE_FORMATTER);
+                break;
+            } catch (DateTimeParseException e) {
+                System.out.println("Format is wroong:");
+            }
+        }
+        return localDate;
     }
 
     static LocalTime askTime(String msg) {
-        String strTime = askString(msg);
-        return LocalTime.parse(strTime, TIME_FORMATTER);
+        LocalTime localTime;
+        while (true) {
+            try {
+                String strTime = askString(msg);
+                localTime = LocalTime.parse(strTime, TIME_FORMATTER);
+                break;
+            } catch (DateTimeParseException e) {
+                System.out.println("Wrong time format");
+            }
+        }
+        return localTime;
     }
 
     private static List<String> getValuesList(String returnedString) {
