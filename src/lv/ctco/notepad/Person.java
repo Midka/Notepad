@@ -1,17 +1,21 @@
 package lv.ctco.notepad;
 
+import java.time.LocalDate;
+
+import static lv.ctco.notepad.Main.askDate;
 import static lv.ctco.notepad.Main.askString;
 import static lv.ctco.notepad.Main.validatePhone;
 
 /**
  * Created by m.troushnikova on 11/16/2018.
  */
-public class Person extends Record {
+public class Person extends Record implements WithBirthday {
     private String name;
     private String surname;
     private String email;
     private String phone;
     private String gender;
+    private LocalDate birthday;
 
 
     public String getName() {
@@ -78,7 +82,23 @@ public class Person extends Record {
     public void askData() {
         setName(askString("Enter person's name:"));
         setSurname(askString("Enter person's surname:"));
-        setPhone(validatePhone());
-        setEmail(askString("Enter person's e-mail:"));
+//        setPhone(validatePhone());
+//        setEmail(askString("Enter person's e-mail:"));
+        setBirthday(askDate("Enter person's birthday"));
+    }
+
+    @Override
+    public LocalDate getBirthay() {
+        return this.birthday;
+    }
+
+    @Override
+    public void setBirthday(LocalDate birthday) {
+        this.birthday = birthday;
+    }
+
+    @Override
+    public boolean hasBirthdayThisMonth() {
+        return false;
     }
 }
