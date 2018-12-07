@@ -26,6 +26,14 @@ public class Main {
             System.out.println("Please, enter command:");
             String cmd = scanner.next();
             switch (cmd) {
+                case "dismiss":
+                case "dis":
+                    dismiss();
+                    break;
+                case "ex":
+                case "expired":
+                    listExpired();
+                    break;
                 case "cn":
                 case "createnote":
                     createRecord(new StickyNote());
@@ -66,6 +74,32 @@ public class Main {
                     System.out.println("Wrong command. Type 'help' to see the list.");
             }
         }
+    }
+
+    private static void dismiss() {
+        int id = askInt("Enter id:");
+        Optional<Expirable> first = records.stream()
+                .filter(e -> e.getId() == id)
+                .filter(r -> r instanceof Expirable)
+                .map(r -> (Expirable) r)
+                .findFirst();
+        first.ifPresent(Expirable::dismiss);
+    }
+
+    private static void listExpired() {
+        records.stream()
+                .filter(r -> r instanceof Expirable)
+                .map(r -> (Expirable)r)
+                .filter(Expirable::isExpired)
+                .forEach(System.out::println);
+/*        for (Record r : records) {
+            if (r instanceof Expirable) {
+                Expirable expirable = (Expirable) r;
+                if (expirable.isExpired()) {
+                    System.out.println(expirable);
+                }
+            }
+        }*/
     }
 
     private static void searchRecord() {
@@ -127,6 +161,20 @@ public class Main {
             }
         }
         return localDate;
+    }
+
+    static int askInt(String msg){
+        int i;
+        while (true) {
+            try {
+                System.out.println(msg);
+                i = scanner.nextInt();
+                break;
+            } catch (DateTimeParseException e) {
+                System.out.println("Format is wroong:");
+            }
+        }
+        return i;
     }
 
     static LocalTime askTime(String msg) {
