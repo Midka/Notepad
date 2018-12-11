@@ -55,4 +55,18 @@ public class Alarm extends StickyNote implements Expirable {
         return time.isBefore(now);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Alarm alarm = (Alarm) o;
+
+        return time.equals(alarm.time);
+    }
+
+    @Override
+    public int hashCode() {
+        return time.hashCode();
+    }
 }

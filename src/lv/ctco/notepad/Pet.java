@@ -25,7 +25,7 @@ public class Pet extends Record implements WithBirthday {
     }
 
     @Override
-    public void setBirthday() {
+    public void setBirthday(LocalDate birthday) {
 
     }
 

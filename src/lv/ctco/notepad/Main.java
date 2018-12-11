@@ -15,7 +15,7 @@ public class Main {
     static final DateTimeFormatter DATE_FORMATTER = ofPattern(DATE_PATTERN);
     static final DateTimeFormatter TIME_FORMATTER = ofPattern(TIME_PATTERN);
     private static Scanner scanner = new Scanner(System.in);
-    private static List<Record> records = new ArrayList<>();
+    private static Map<Integer, Record> records = new TreeMap<>();
    // private static final File RESULTS_FILE = new File("persons.txt");
 
     public static void main(String[] args) {
@@ -78,16 +78,14 @@ public class Main {
 
     private static void dismiss() {
         int id = askInt("Enter id:");
-        Optional<Expirable> first = records.stream()
-                .filter(e -> e.getId() == id)
-                .filter(r -> r instanceof Expirable)
-                .map(r -> (Expirable) r)
-                .findFirst();
-        first.ifPresent(Expirable::dismiss);
+        Record r = records.get(id);
+        if(r instanceof Expirable) { // not necessary to compare with null
+            ((Expirable) r).dismiss();
+        }
     }
 
     private static void listExpired() {
-        records.stream()
+        records.values().stream()
                 .filter(r -> r instanceof Expirable)
                 .map(r -> (Expirable)r)
                 .filter(Expirable::isExpired)
@@ -104,19 +102,19 @@ public class Main {
 
     private static void searchRecord() {
         String ss = askString("Enter search string:");
-        records.stream()
+        records.values().stream()
                 .filter(r -> r.contains(ss))
                 .forEach(System.out::println);
     }
 
     private static void createRecord(Record record) {
         record.askData();
-        records.add(record);
+        records.put(record.getId(), record);
 //        System.out.println(record);
     }
 
     private static void showList() {
-        records.forEach(System.out::println);
+        records.forEach((k, v) -> System.out.println(k + " " + v));
     }
 
     private static void showHelp() {
@@ -207,16 +205,19 @@ public class Main {
     private static void deleteRecord() {
         System.out.println("Enter ID of record You would like to delete");
         int enteredID = getEnteredNumber();
-        Record personTodelete = null;
 
-        for(Record person : records){
-            if (person.getId() == enteredID) {
-                personTodelete = person;
-            }
-        }
-        if (personTodelete != null) {
-            records.remove(personTodelete);
-        }
+        records.remove(enteredID);
+        showList();
+//        Record personTodelete = null;
+//
+//        for(Record person : records){
+//            if (person.getId() == enteredID) {
+//                personTodelete = person;
+//            }
+//        }
+//        if (personTodelete != null) {
+//            records.remove(personTodelete);
+//        }
     }
 
     private static int getEnteredNumber() {
@@ -228,7 +229,7 @@ public class Main {
             try {
                 int enteredNumber = scanner.nextInt();
 
-                if (Optional.empty().equals(records.stream().filter(person -> person.getId() == enteredNumber).findFirst())) {
+                if (Optional.empty().equals(records.values().stream().filter(person -> person.getId() == enteredNumber).findFirst())) {
                     System.out.println("Error! current ID is not presented, please check list.");
                     continue;
                 }
